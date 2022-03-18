@@ -15,11 +15,11 @@
     <input type="submit" name="Submit">
   </form>
 
-  <h2>List of Churches</h2>
+  <h2>List of Churches Sorted by Distance</h2>
   {% for church in churches %}
-    <p>{{ church }}</p>
+    <p>{{church.name }}</p>
+    <p>{{church.address}}</p>
+    <p>{{church.distance}}</p>
   {% endfor %}
-  <h2><p>{{response}}</p></h2>
-
 </body>
 </html>
