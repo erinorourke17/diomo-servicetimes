@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -13,14 +13,11 @@ GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 project_id = 'diomo-servicetimes'
 app = Flask(__name__)
 
-def create_client():
-    from google.cloud import storage
-
-    # If you don't specify credentials when constructing the client, the
-    # client library will look for credentials in the environment.
-    storage_client = storage.Client.from_service_account_json(
-        GOOGLE_APPLICATION_CREDENTIALS)
-    return storage_client
+#def create_client():
+#    from google.cloud import storage
+#    storage_client = storage.Client.from_service_account_json(
+#        GOOGLE_APPLICATION_CREDENTIALS)
+#    return storage_client
 
 def add_church(client: datastore.Client):
     kind = "church"
@@ -40,17 +37,39 @@ def list_churches(client: datastore.Client):
     query = client.query(kind="church")
     return(list(query.fetch()))
 
+def get_geocode(location):
+    #convert address from user to geopoint
+    location_formatted = location.replace(" ", "+")
+    x = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address='+location_formatted+',+CA&key='+API_KEY)
+    georesponse = x.json()
+    if (len(georesponse["results"]) ==  0):
+        return "invalid location"
+    else:
+        return (georesponse["results"][0]['geometry']['location'])
 @app.route('/')
 def root():
 
-    x = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key='+API_KEY)
-    #from database get list of churches and print as list
-    client = create_client()
+    
+    #from database get list of churches
+    #determine distance between churches in db and user address
+    #print in order
+
+    #client = create_client()
     ds_client = datastore.Client()
-    add_church(ds_client)
+    #add_church(ds_client)
     churches = list_churches(ds_client)
     return render_template(
-        'index.html', churches=churches, response=x.content)
+        'index.html', churches=churches, response='none')
+
+@app.route('/', methods=['POST'])
+def my_form_post():
+    location = request.form['location']
+    
+    ds_client = datastore.Client()
+    #add_church(ds_client)
+    churches = list_churches(ds_client)
+    geocode = get_geocode(location)
+    return render_template('index.html', churches=churches, response=geocode)
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
