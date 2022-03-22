@@ -10,16 +10,10 @@
 
   <h1>Diocese of Missouri Service Times</h1>
 
-  <form method="POST"><h1>Enter your location:</h1>
+  <form method="POST"><h2>Enter your location</h2>
+    <h2>to get a list of Episcopal churches nearest to you</h2>
     <input type="text" name="location">
     <input type="submit" name="Submit">
   </form>
-  <h2>{{response}}</h2>
-  <h2>Episcopal Churches</h2>
-  {% for church in churches %}
-    <p>{{church.name }}</p>
-    <p>{{church.address}}</p>
-    <p>{{church.distance}}</p>
-  {% endfor %}
 </body>
 </html>
