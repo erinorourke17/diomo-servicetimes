@@ -1,21 +1,17 @@
-#TODO: clean up methods/variable names
-#TODO determine what to output in default case (no address given yet)
-#TODO add miles to the end of the distances
+#TODO: clean up variable names
 #TODO add service times 2
-
 
 import datetime
 from flask import Flask, request, render_template
 import os
 from dotenv import load_dotenv
-load_dotenv()
 from google.cloud import datastore
 import requests
 import googlemaps
 import re
 import sys
 
-
+load_dotenv()
 API_KEY = os.getenv('MAPS_TOKEN')
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
@@ -34,7 +30,7 @@ class Church:
     def set_dist(self, distance):
         self.distance = distance
 
-class UserLoc:
+class UserLoc: #location based on user input
     def __init__ (self, user_input):
         self.input = user_input
         self.geocode = None
@@ -47,13 +43,6 @@ class UserLoc:
 
     def set_valid(self):
         self.valid = True
-
-#def create_client():
-#    from google.cloud import storage
-#    storage_client = storage.Client.from_service_account_json(
-#        GOOGLE_APPLICATION_CREDENTIALS)
-#    return storage_client
-
 
 def add_church(client: datastore.Client):
     kind = "church"
@@ -105,10 +94,6 @@ def sort_churches (churches):
 
 @app.route('/')
 def root():    
-    #client = create_client()
-    ds_client = datastore.Client()
-    #add_church(ds_client)
-    churches = list_churches(ds_client)
     return render_template('home.html')
 
 @app.route('/', methods=['POST'])
