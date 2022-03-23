@@ -14,10 +14,10 @@
     <input type="text" name="location">
     <input type="submit" name="Submit">
   </form>
-  <h2>{{response}}</h2>
+  <!-- <h2>{{response}}</h2> -->
   <h2>Episcopal Churches</h2>
   {% for church in churches %}
-    <p>{{church.name }}</p>
+    <h3>{{church.name }}</h3>
     <p>{{church.address}}</p>
     <p>{{church.distance}} miles</p>
   {% endfor %}

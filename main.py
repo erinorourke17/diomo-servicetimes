@@ -1,5 +1,9 @@
 #TODO: clean up variable names
-#TODO add service times 2
+#TODO DAH 1ft vs 1.0 miles issue
+#TODO add service times to database, display
+#TODO allow users to filter by day of week
+#TODO improve interface :)
+#TODO eventually add page for users to add/update a church (drop down from database???)
 
 import datetime
 from flask import Flask, request, render_template
@@ -70,7 +74,7 @@ def list_churches(client: datastore.Client):
 def get_geocode(user_input):
     #convert address from user to geopoint
     georesponse = gmaps.geocode(user_input.input)
-    print(georesponse, file=sys.stderr)
+    #print(georesponse, file=sys.stderr)
     try:
         geocode = georesponse[0]['geometry']['location']
         user_input.set_geocode(geocode)
@@ -108,7 +112,8 @@ def my_form_post():
     if (user_input.valid): #if the geocode is valid
         calculate_distances(user_input, churches) #get distance between user-input location and churches in database
         x = sort_churches(churches) #sort churches by distance from user
-        return render_template('index.html', churches=x, response = "it's working!!")
+        x = x[:10]
+        return render_template('index.html', churches=x, response = "Episcopal Churches")
     else:
         return render_template('index.html', response = "invalid location given")
     
