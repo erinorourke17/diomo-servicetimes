@@ -21,19 +21,17 @@
     <p>{{church.distance}} miles</p>
   {% endfor %}!-->
   {% for key, value in churches.items() %}
-   <tr>
-       <td> {{ key.name }} </td>
-       <td> {{ key.address }} </td>
-       <td> {{ key.distance }} </td>
+       <h3> {{ key.name }} </h3>
+       <p> {{ key.address }} </p>
+       <p> {{ key.distance }} miles </p>
        <tr>
             {% for service in value %}
-              <td>{{ service.day }}</td>
+              <p>{{ service.day }}
               <td>{{ service.time }}</td>
               <td>{{ service.type }}</td>
-              <td>{{ service.notes }}</td>
+              <td>{{ service.notes }}</td></p>
             {% endfor %}
         </tr>
-   </tr>
   {% endfor %}
 </body>
 </html>

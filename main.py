@@ -99,7 +99,6 @@ def calculate_distances(user_loc, churches):
         dist =(gmaps.directions(user_loc.geocode, church.address)[0]['legs'][0]['distance']['text'])
         #print(dist, file=sys.stderr)
         intdist = float(re.findall("\d*\.\d+|\d*", dist)[0]) # match either round # of miles or decimal
-
         church.set_dist(intdist)
 
 def sort_churches (churches):
@@ -123,7 +122,7 @@ def my_form_post():
     if (user_input.valid): #if the geocode is valid
         calculate_distances(user_input, churches) #get distance between user-input location and churches in database
         church_list = sort_churches(churches) #sort churches by distance from user
-        church_list =church_list[:1]
+        church_list =church_list[:10]
         church_dict ={}
         for church in church_list:
             query = ds_client.query(kind="service", ancestor = church.key)
@@ -131,11 +130,11 @@ def my_form_post():
             servicequery = query.fetch()
             servicelist = []
             for service in servicequery:
-                print(service)
+                #print(service)
                 servicelist.append(Service(service.get("Day"), service.get("Time"), service.get("Service Type"), service.get("Notes")))
             servicelist.append(Service("Sunday", "6:13 PM", "Rite II Test", "example only"))
             church_dict[church]=servicelist    
-            print(church_dict, file=sys.stderr)
+            #print(church_dict, file=sys.stderr)
         return render_template('index.html', churches=church_dict, response = "Episcopal Churches")
     else:
         return render_template('index.html', response = "invalid location given")
