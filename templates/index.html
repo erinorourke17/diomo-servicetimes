@@ -14,12 +14,26 @@
     <input type="text" name="location">
     <input type="submit" name="Submit">
   </form>
-  <!-- <h2>{{response}}</h2> -->
-  <h2>Episcopal Churches</h2>
-  {% for church in churches %}
+  <h2>{{response}}</h2>
+  <!--{% for church in churches %}
     <h3>{{church.name }}</h3>
     <p>{{church.address}}</p>
     <p>{{church.distance}} miles</p>
+  {% endfor %}!-->
+  {% for key, value in churches.items() %}
+   <tr>
+       <td> {{ key.name }} </td>
+       <td> {{ key.address }} </td>
+       <td> {{ key.distance }} </td>
+       <tr>
+            {% for service in value %}
+              <td>{{ service.day }}</td>
+              <td>{{ service.time }}</td>
+              <td>{{ service.type }}</td>
+              <td>{{ service.notes }}</td>
+            {% endfor %}
+        </tr>
+   </tr>
   {% endfor %}
 </body>
 </html>

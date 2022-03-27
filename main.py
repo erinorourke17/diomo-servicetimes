@@ -25,14 +25,22 @@ project_id = 'diomo-servicetimes'
 app = Flask(__name__)
 
 class Church:
-    def __init__(self, name, address):
+    def __init__(self, name, address, key):
         self.name = name
         self.address = address
+        self.key = key
         self.dist_to_user = None
     def tostring(self):
         return self.name + " " + self.address
     def set_dist(self, distance):
         self.distance = distance
+
+class Service:
+    def __init__(self, day, time, servicetype, notes):
+        self.day = day
+        self.time = time
+        self.type = servicetype
+        self.notes = notes
 
 class UserLoc: #location based on user input
     def __init__ (self, user_input):
@@ -64,9 +72,11 @@ def add_church(client: datastore.Client):
 
 def list_churches(client: datastore.Client):
     query = client.query(kind="church")
+    #query.keys_only()
     church_list = []
     for church in list(query.fetch()):
-        newchurch = Church(church.get("name"), church.get("address"))
+        #print ("key =" + church.Key, file = sys.stderr)
+        newchurch = Church(church.get("name"), church.get("address"), client.key('church', 'Advent'))
         church_list.append(newchurch)
     return church_list
 
@@ -85,6 +95,7 @@ def get_geocode(user_input):
 
 def calculate_distances(user_loc, churches):
     for church in churches:
+        #print (church.address)
         dist =(gmaps.directions(user_loc.geocode, church.address)[0]['legs'][0]['distance']['text'])
         #print(dist, file=sys.stderr)
         intdist = float(re.findall("\d*\.\d+|\d*", dist)[0]) # match either round # of miles or decimal
@@ -111,9 +122,21 @@ def my_form_post():
     user_input = get_geocode(user_input)
     if (user_input.valid): #if the geocode is valid
         calculate_distances(user_input, churches) #get distance between user-input location and churches in database
-        x = sort_churches(churches) #sort churches by distance from user
-        x = x[:10]
-        return render_template('index.html', churches=x, response = "Episcopal Churches")
+        church_list = sort_churches(churches) #sort churches by distance from user
+        church_list =church_list[:1]
+        church_dict ={}
+        for church in church_list:
+            query = ds_client.query(kind="service", ancestor = church.key)
+            #print("key = " + church.key, file = sys.stderr)
+            servicequery = query.fetch()
+            servicelist = []
+            for service in servicequery:
+                print(service)
+                servicelist.append(Service(service.get("Day"), service.get("Time"), service.get("Service Type"), service.get("Notes")))
+            servicelist.append(Service("Sunday", "6:13 PM", "Rite II Test", "example only"))
+            church_dict[church]=servicelist    
+            print(church_dict, file=sys.stderr)
+        return render_template('index.html', churches=church_dict, response = "Episcopal Churches")
     else:
         return render_template('index.html', response = "invalid location given")
     
