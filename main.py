@@ -72,11 +72,19 @@ def add_church(client: datastore.Client):
 
 def list_churches(client: datastore.Client):
     query = client.query(kind="church")
-    #query.keys_only()
+    query2 = client.query(kind = "church")
+    query2.keys_only()
     church_list = []
-    for church in list(query.fetch()):
-        #print ("key =" + church.Key, file = sys.stderr)
-        newchurch = Church(church.get("name"), church.get("address"), client.key('church', 'Advent'))
+    for church, key in zip (list(query.fetch()), list(query2.fetch())):
+        keystring = str(key)
+        match =re.findall(r"\(.+\)", keystring)
+        
+        keystring = match[0]
+        keystring= keystring.replace('(','').replace(')','')  
+        keystring= keystring.replace('"','') 
+        trash, keystring =keystring.split() 
+        print(keystring, file= sys.stderr)
+        newchurch = Church(church.get("name"), church.get("address"), keystring)
         church_list.append(newchurch)
     return church_list
 
@@ -125,14 +133,21 @@ def my_form_post():
         church_list =church_list[:10]
         church_dict ={}
         for church in church_list:
-            query = ds_client.query(kind="service", ancestor = church.key)
-            #print("key = " + church.key, file = sys.stderr)
+            keyforquery = ds_client.key(church.key)
+            print (church.key, file=sys.stderr)
+            
+            
+            print(type(church.key), file=sys.stderr)
+            key_edited = church.key.strip("''")
+            ancestor1 = ds_client.key("church", key_edited)
+            query = ds_client.query(kind="service", ancestor=ancestor1)
             servicequery = query.fetch()
             servicelist = []
+            print(servicelist, file=sys.stderr)
             for service in servicequery:
-                #print(service)
+                print(service)
                 servicelist.append(Service(service.get("Day"), service.get("Time"), service.get("Service Type"), service.get("Notes")))
-            servicelist.append(Service("Sunday", "6:13 PM", "Rite II Test", "example only"))
+            #servicelist.append(Service("Sunday", "6:13 PM", "Rite II Test", "example only"))
             church_dict[church]=servicelist    
             #print(church_dict, file=sys.stderr)
         return render_template('index.html', churches=church_dict, response = "Episcopal Churches")
