@@ -1,4 +1,69 @@
 body {
-  font-family: "helvetica", sans-serif;
+  background-color: #18191c;
+  color: white;
+  font-family: garamond, serif;
   text-align: center;
+}
+.header {
+  text-align: left;
+  padding: 10px;
+}
+input {
+  margin: 0;
+  border-radius: 4px;
+  font-family: garamond, serif;
+  background-color: lightgray;
+}
+input[type=text]
+{
+  transition: width 0.4s ease-in-out;
+  width: 40%; 
+
+}
+input[type=text]:focus
+{
+  width: 80%; 
+
+}
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+}
+
+#tec {
+  position: sticky;
+  top: 0;
+}
+
+h2 {
+  font-size: 2em;
+}
+
+h3 {
+
+  font-size: 1.5em;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  color: darkcyan;
+}
+
+p {
+  font-size: 1em;
+}
+fa-solid fa-church {
+  color: white;
+  margin: 0px;
+  border: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+fa-solid fa-cross {
+  color: white;
 }

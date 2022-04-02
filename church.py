@@ -1,7 +1,8 @@
 class Church:
-    def __init__(self, name, address, key):
+    def __init__(self, name, address, link, key):
         self.name = name
         self.address = address
+        self.link = link
         self.key = key
         self.dist_to_user = None
     def tostring(self):

@@ -53,7 +53,7 @@ def list_churches(client: datastore.Client):
         keystring= keystring.replace('(','').replace(')','')  
         keystring= keystring.replace('"','') 
         trash, keystring =keystring.split() 
-        newchurch = Church(church.get("name"), church.get("address"), keystring)
+        newchurch = Church(church.get("name"), church.get("address"), church.get("website"), keystring)
         church_list.append(newchurch)
     return church_list
 
@@ -118,7 +118,7 @@ def my_form_post():
         church_dict = get_services(user_input)
         return render_template('index.html', churches=church_dict, response = "Episcopal Churches")
     else:
-        return render_template('index.html', response = "invalid location given")
+        return render_template('index.html', churches = {}, response = "invalid location given")
     
 
 if __name__ == '__main__':

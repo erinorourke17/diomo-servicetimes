@@ -2,18 +2,17 @@
 
 <html>
 <head>
-  <title>Diocese of Missouri Service Times</title>
+  <title>Diocese of Missouri Service Times</title> 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="https://kit.fontawesome.com/afc2ef3fbe.js" crossorigin="anonymous"></script>
   <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
   <h1>Diocese of Missouri Service Times</h1>
-
-  <form method="POST"><h2>Enter your location</h2>
-    <h2>to get a list of Episcopal churches nearest to you</h2>
+  <form method="POST"><h2>Enter your location </h2>
     <input type="text" name="location">
-    <input type="submit" name="Submit">
+    <input type="submit" name="submit">
+    <p>and get a list of Episcopal churches nearest to you</p>
   </form>
 </body>
 </html>
