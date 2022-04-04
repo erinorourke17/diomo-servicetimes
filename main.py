@@ -4,6 +4,7 @@
 #TODO allow users to filter by day of week
 #TODO improve interface :)
 #TODO eventually add page for users to add/update a church (drop down from database???)
+#TODO Fix auth error for remote version of project
 
 import datetime
 from flask import Flask, request, render_template
