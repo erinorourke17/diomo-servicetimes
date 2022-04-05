@@ -105,13 +105,17 @@ def root():
 def my_form_post():
     #from database get list of churches
     #determine distance between churches in db and user address
-    user_input = UserLoc(request.form['location'])
-    user_input = get_geocode(user_input)
-    if (user_input.valid): #if the geocode is valid
-        church_dict = get_services(user_input)
-        return render_template('index.html', churches=church_dict, response = "Episcopal Churches")
+    user_input = request.form['location']
+    if (user_input):
+        user_input = UserLoc(request.form['location'])
+        user_input = get_geocode(user_input)
+        if (user_input.valid): #if the geocode is valid
+            church_dict = get_services(user_input)
+            return render_template('index.html', churches=church_dict, response = "Episcopal Churches")
+        else:
+            return render_template('index.html', churches = {}, response = "Location not found, please try again")
     else:
-        return render_template('index.html', churches = {}, response = "invalid location given")
+        return render_template('index.html', churches = {}, response = "Please enter a location")
     
 
 if __name__ == '__main__':
