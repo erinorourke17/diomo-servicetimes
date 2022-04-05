@@ -17,7 +17,6 @@ Much of the code for this project is written in Python, with some JavaScript, as
 I will remove items from this list as they are fixed and add others as I encounter bugs or think of features.
 
 * Enter data for more service times
-* Eliminate rounding up of very short distances
 * Allow users to filter by day of week or type of service
 * Improve runtime, possibly by switching Maps APIs
 * Offering autocomplete as a user types a location

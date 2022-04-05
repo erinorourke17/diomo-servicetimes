@@ -69,9 +69,12 @@ def calculate_distances(user_loc, churches):
     for church in churches:
         #print (church.address)
         dist =(gmaps.directions(user_loc.geocode, church.address)[0]['legs'][0]['distance']['text'])
-        #print(dist, file=sys.stderr)
-        intdist = float(re.findall("\d*\.\d+|\d*", dist)[0]) # match either round # of miles or decimal
-        church.set_dist(intdist)
+        print(dist, file=sys.stderr)
+        dist = dist.split(" ")
+        if (dist[1] == "ft"): # convert to miles to enable consistent sorting
+            dist[0]= round(float(dist[0])/5280, 2)
+            dist[1]="mi"
+        church.set_dist(float(dist[0]))
 
 def get_services(user_input):
     churches = list_churches(ds_client)
@@ -115,7 +118,7 @@ def my_form_post():
         else:
             return render_template('index.html', churches = {}, response = "Location not found, please try again")
     else:
-        return render_template('index.html', churches = {}, response = "Please enter a location")
+        return render_template('home.html', churches = {}, response = "Please enter a location")
     
 
 if __name__ == '__main__':
