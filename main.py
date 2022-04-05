@@ -1,11 +1,3 @@
-#TODO: clean up variable names
-#TODO DAH 1ft vs 1.0 miles issue
-#TODO finish data entry of service times
-#TODO allow users to filter by day of week
-#TODO improve interface :)
-#TODO eventually add page for users to add/update a church (drop down from database???)
-#TODO Fix auth error for remote version of project
-
 import datetime
 from flask import Flask, request, render_template
 import os
@@ -21,8 +13,10 @@ from userloc import UserLoc
 
 load_dotenv()
 API_KEY = os.getenv('MAPS_TOKEN')
-GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-
+ds_client = datastore.Client()
+query = ds_client.query(kind="settings")
+settings = list(query.fetch())[0]
+API_KEY = settings.get("APIKey")
 gmaps = googlemaps.Client(key=API_KEY)
 
 project_id = 'diomo-servicetimes'
@@ -80,7 +74,6 @@ def calculate_distances(user_loc, churches):
         church.set_dist(intdist)
 
 def get_services(user_input):
-    ds_client = datastore.Client()
     churches = list_churches(ds_client)
     church_list = sort_church_list(user_input, churches)
     church_dict ={}
@@ -98,7 +91,6 @@ def get_services(user_input):
 
 
 def sort_church_list (user_input, churches):
-    ds_client = datastore.Client()
     calculate_distances(user_input, churches) #get distance between user-input location and churches in database #sort churches by distance from user
     newlist = sorted(churches, key=lambda x: x.distance)
     newlist =newlist[:10]
