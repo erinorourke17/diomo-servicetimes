@@ -66,18 +66,21 @@ def get_geocode(user_input):
 
 
 def calculate_distances(user_loc, churches):
+    dest_addresses = []
     for church in churches:
-        #print (church.address)
-        dist =(gmaps.directions(user_loc.geocode, church.address)[0]['legs'][0]['distance']['text'])
-        #print(dist, file=sys.stderr)
-        dist = dist.split(" ")
-        if (dist[1] == "ft"): # convert to miles to enable consistent sorting
-            dist[0]= round(float(dist[0])/5280, 2)
-            dist[1]="mi"
-            church.set_dist(float(dist[0]))
-        else:
-            newdist = dist[0].replace(",","")
-            church.set_dist(float(newdist))
+        dest_addresses.append(church.address)
+    api_list_limit = 25
+    for i in range(0, len(dest_addresses), api_list_limit):
+        output = gmaps.distance_matrix(user_loc.geocode, dest_addresses[i:i+api_list_limit] , mode="driving", units="imperial")
+        for church, dest, dist in zip(churches[i:i+api_list_limit],dest_addresses[i:i+api_list_limit], output['rows'][0]['elements']):
+            dist = dist['distance']['text'].split(" ")
+            if (dist[1] == "ft"): # convert to miles to enable consistent sorting
+                dist[0]= round(float(dist[0])/5280, 2)
+                dist[1]="mi"
+                church.set_dist(float(dist[0]))
+            else:
+                newdist = dist[0].replace(",","")
+                church.set_dist(float(newdist))  
 
 def get_services(user_input):
     churches = list_churches(ds_client)
