@@ -74,7 +74,10 @@ def calculate_distances(user_loc, churches):
         if (dist[1] == "ft"): # convert to miles to enable consistent sorting
             dist[0]= round(float(dist[0])/5280, 2)
             dist[1]="mi"
-        church.set_dist(float(dist[0]))
+            church.set_dist(float(dist[0]))
+        else:
+            newdist = dist[0].replace(",","")
+            church.set_dist(float(newdist))
 
 def get_services(user_input):
     churches = list_churches(ds_client)
